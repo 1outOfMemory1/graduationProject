@@ -6,7 +6,8 @@ import scipy.io.wavfile
 from matplotlib import pyplot as plt
 from scipy.fftpack import dct
 
-sample_rate,signal=scipy.io.wavfile.read('F:/test/recordAudio/a1.wav')
+# sample_rate,signal=scipy.io.wavfile.read('F:/test/recordAudio/a1.wav')
+sample_rate,signal=scipy.io.wavfile.read( 'F:/test/recordAudio/nihao.wav')
 
 print(sample_rate,len(signal))
 #读取前3.5s 的数据

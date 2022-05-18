@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>实现在网页上录音</title>
+  </head>
+  <style>
+    .btn {
+      display: inline-block;
+      line-height: 1;
+      white-space: nowrap;
+      background: #fff;
+      border: 1px solid #dcdfe6;
+      text-align: center;
+      box-sizing: border-box;
+      outline: none;
+      margin: 0;
+      font-weight: 500;
+      padding: 12px 20px;
+      color: #fff;
+    }
+    .record-start-btn {
+      background-color: #409eff;
+      border-color: #409eff;
+    }
+    .record-finish-btn {
+      background-color: #f56c6c;
+      border-color: #f56c6c;
+    }
+  </style>
+  <body>
+    <div class="app">
+      <button class="record-start-btn btn">开始录音</button>
+      <button class="record-finish-btn btn">结束录音</button>
+      <audio controls class="audio-player"></audio>
+    </div>
+
+    <script>
+      // 连接麦克风
+      if (navigator.mediaDevices.getUserMedia) {
+        const constraints = { audio: true };
+        navigator.mediaDevices.getUserMedia(constraints).then(
+          // 授权成功
+          (stream) => {
+            // 绑定开始录音按钮
+            const recordStartBtn = document.querySelector(".record-start-btn");
+            // 绑定结束录音按钮
+            const recordFinishBtn =
+              document.querySelector(".record-finish-btn");
+            // 创建MediaRecorder空对象
+            const mediaRecorder = new MediaRecorder(stream);
+            var chunks = [];
+            recordStartBtn.onclick = () => {
+              console.log(mediaRecorder.state);
+              if (mediaRecorder.state === "inactive") {
+                mediaRecorder.start();
+                mediaRecorder.ondataavailable = function (e) {
+                  chunks.push(e.data);
+                };
+                console.log(chunks);
+              } else {
+                 alert('开启录音中')
+              }
+            };
+            recordFinishBtn.onclick = () => {
+              if (mediaRecorder.state == "recording") {
+                mediaRecorder.stop();
+                mediaRecorder.onstop = (e) => {
+                  var blob = new Blob(chunks, {
+                    type: "audio/ogg; codecs=opus",
+                  });
+                  chunks = [];
+                  var audioURL = window.URL.createObjectURL(blob);
+                  const audioSrc = document.querySelector(".audio-player");
+                  audioSrc.src = audioURL;
+                };
+              }else{
+                alert('没有开启录音')
+              }
+            };
+          },
+          () => {
+            alert("授权失败！");
+          }
+        );
+      } else {
+        console.error("浏览器不支持 getUserMedia");
+      }
+    </script>
+  </body>
+</html>

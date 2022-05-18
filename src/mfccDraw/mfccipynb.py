@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 
 plt.rcParams['font.sans-serif'] = 'SimHei'  # 用来正常显示中文标签
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
-wav_file = 'F:/test/recordAudio/nihao.wav'
+# wav_file = 'F:/test/recordAudio/nihao.wav'
+wav_file = 'G:/资料备份/视频下载/123.wav'
 # wav_file = 'F:/test/ASRT_v1.2.0/output.wav'
 signal, samplerate = torchaudio.load(wav_file)
 signal = signal[0]
