@@ -4,8 +4,8 @@ from string import Template
 from flask import Flask, request, send_file
 from werkzeug.utils import secure_filename
 from datetime import datetime
-
-app = Flask(__name__)
+from scipy.io import wavfile
+app = Flask(__name__,static_folder="./static")
 pwd = os.path.dirname(__file__)
 
 # 定义文件的保存路径和文件名尾缀
@@ -19,8 +19,12 @@ HOST = "localhost"
 PORT = 5000
 
 
-def commonResponse(res, message):
+def commonSuccessResponse(res, message):
     return {"code": 0, "result": res, "message": message}
+
+def commonErrorResponse(message):
+    return {"code": 1, "result": None, "message": message}
+
 
 
 @app.route('/index')
@@ -87,7 +91,17 @@ def list_wav_file():
     file_list = []
     for f in file:
         file_list.append(f)
-    return commonResponse(str(file_list), "成功获取已上传的wav文件列表")
+    return commonSuccessResponse(file_list, "成功获取已上传的wav文件列表")
+
+@app.route("/get_sound_wave_pic_url")
+def get_sound_wave_pic_url():
+    file_name =  request.args.get('wavFileName')
+    file_path = upload_dir + "/" + file_name
+    if os.path.exists(file_path):
+        samplerate, signal = wavfile.read(file_path)
+        return commonSuccessResponse(signal.tolist(),"获取{}录音文件解析数据成功".format(file_name) )
+    else:
+        return commonErrorResponse("{}文件不存在".format(file_name))
 
 
 @app.route("/download")

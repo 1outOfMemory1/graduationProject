@@ -1,46 +1,51 @@
 <template>
   <div class="p-5">
+    <PageWrapper   title="生成语谱图" >
+
+    </PageWrapper>
+
     <a-select
+      placeholder="选择想要分析的已经保存的录音"
       ref="select"
       :value="selected_wav_file"
-      style="width: 120px"
+      style="width: 250px"
       :options="wav_list_options"
       @focus="focus"
       @change="handleChange"
     >
     </a-select>
     <span style="display: inline-block;width: 10px;height: 10px"> </span>
-    <span style="font-size: 15px"> 选择想要分析的已经保存的录音</span>
+    <a-button type="primary">生成</a-button>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref } from "vue";
   import { Input } from 'ant-design-vue';
+import { getListWavFileApi } from "/@/api/sys/wav_process";
+import { PageWrapper } from '/@/components/Page';
   export default defineComponent({
     name: 'Menu4Demo',
-    components: { Input },
-    setup(){
-      const  wav_list_options = [
-        {
-          value: 'aaa',
-          label: 'aaa',
-        }
-      ]
-
-      const focus = () => {
-        console.log('focus');
+    components: { Input,PageWrapper },
+    data() {
+      return {
+        selected_wav_file: undefined,
+        wav_list_options: []
       };
-
-      const handleChange = (value: string) => {
-        console.log(`selected ${value}`);
-      };
-
-      return{
-        focus,
-        handleChange,
-        wav_list_options,
-        selected_wav_file: ref<string | undefined>(undefined)
-      }
+    },
+    methods: {
+      focus() {
+        this.wav_list_options = [];
+        getListWavFileApi().then((res) => {
+          res.forEach((ele) => {
+            this.wav_list_options.push({ value: ele, label: ele });
+          });
+        }, error => {
+          console.log(error);
+        });
+      },
+      handleChange(value: string) {
+        this.selected_wav_file = value
+      },
     }
   });
 </script>
