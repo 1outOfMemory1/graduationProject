@@ -20,7 +20,7 @@ const permission: AppRouteModule = {
       name: 'Menu1Demo',
       component: () => import('/@/views/demo/level/Menu1.vue'),
       meta: {
-        title: '音频文件分析',
+        title: '音频文件上传或录制',
       },
     },
     {
@@ -28,7 +28,25 @@ const permission: AppRouteModule = {
       name: 'Menu2Demo',
       component: () => import('/@/views/demo/level/Menu2.vue'),
       meta: {
-        title: '在线语音转文字',
+        title: '生成波型图',
+        // ignoreKeepAlive: true,
+      },
+    },
+    {
+      path: 'menu3',
+      name: '生成语谱图',
+      component: () => import('/@/views/demo/level/Menu3.vue'),
+      meta: {
+        title: '生成语谱图',
+        // ignoreKeepAlive: true,
+      },
+    },
+    {
+      path: 'menu4',
+      name: '语音转文字',
+      component: () => import('/@/views/demo/level/Menu4.vue'),
+      meta: {
+        title: '语音转文字',
         // ignoreKeepAlive: true,
       },
     },

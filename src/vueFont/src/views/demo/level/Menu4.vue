@@ -1,6 +1,5 @@
 <template>
   <div class="p-5">
-
     <a-select
       ref="select"
       :value="selected_wav_file"
@@ -15,13 +14,22 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
-  import { Input } from 'ant-design-vue';
 
-  export default defineComponent({
+import { defineComponent, ref } from "vue";
+import { Input } from 'ant-design-vue';
+import { getListWavFileApi } from "/@/api/sys/wav_process";
 
-    name: 'Menu2Demo',
+export default defineComponent({
+    name: 'Menu3Demo',
     components: { Input },
+    mounted() {
+      console.log(1111)
+      console.log(2222)
+
+      getListWavFileApi().then(function (response) {
+        console.log(response)
+      })
+    },
     setup(){
       const  wav_list_options = [
         {
@@ -38,6 +46,8 @@
         console.log(`selected ${value}`);
       };
 
+
+
       return{
         focus,
         handleChange,
@@ -45,7 +55,5 @@
         selected_wav_file: ref<string | undefined>(undefined)
       }
     }
-
   });
-
 </script>

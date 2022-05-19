@@ -14,9 +14,12 @@ import { setupStore } from '/@/store';
 import { setupGlobDirectives } from '/@/directives';
 import { setupI18n } from '/@/locales/setupI18n';
 import { registerGlobComp } from '/@/components/registerGlobComp';
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
 
 async function bootstrap() {
   const app = createApp(App);
+  app.use(Antd);
 
   // Configure store
   setupStore(app);
