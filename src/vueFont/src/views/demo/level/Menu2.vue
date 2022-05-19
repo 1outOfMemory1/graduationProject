@@ -1,6 +1,6 @@
 <template>
   <div class="p-5">
-    <PageWrapper   title="生成波形图" >
+    <PageWrapper title="生成波形图">
       <a-select
         placeholder="选择想要分析的已经保存的录音"
         ref="select"
@@ -12,139 +12,122 @@
       >
       </a-select>
       <span style="display: inline-block;width: 10px;height: 10px"> </span>
-      <a-button type="primary">生成</a-button>
+      <a-button type="primary" @click="generateBtnClick">生成</a-button>
     </PageWrapper>
-    <div ref="chartRef" :style="{ height, width }"></div>
+    <div id="my_echart" style="width: 100%;height: 800px"></div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, Ref, ref } from "vue";
-  import { Input } from 'ant-design-vue';
-  import { getListWavFileApi } from "/@/api/sys/wav_process";
-  import { PageWrapper } from '/@/components/Page';
+import { defineComponent, Ref, ref } from "vue";
+import { Input } from "ant-design-vue";
+import { getSoundWaveListApi, getWavFileListApi } from "/@/api/sys/wav_process";
+import { PageWrapper } from "/@/components/Page";
 import { useECharts } from "/@/hooks/web/useECharts";
 import { getLineData } from "/@/views/demo/charts/data";
 
-  export default defineComponent({
+export default defineComponent({
 
-    name: 'Menu2Demo',
-    components: { Input,PageWrapper },
-    data() {
-      return {
-        selected_wav_file: undefined,
-        wav_list_options: []
-      };
-    },
-    methods: {
-      focus() {
-        this.wav_list_options = [];
-        getListWavFileApi().then((res) => {
-          res.forEach((ele) => {
-            this.wav_list_options.push({ value: ele, label: ele });
-          });
-        }, error => {
-          console.log(error);
-        });
-      },
-      handleChange(value: string) {
-        this.selected_wav_file = value
-      },
-    },
-    setup() {
-      const chartRef = ref<HTMLDivElement | null>(null);
-      const { setOptions, echarts } = useECharts(chartRef as Ref<HTMLDivElement>);
-      const { barData, lineData, category } = getLineData;
-      onMounted(() => {
-        setOptions({
-          backgroundColor: '#0f375f',
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow',
-              label: {
-                show: true,
-                backgroundColor: '#333',
-              },
-            },
+  name: "Menu2Demo",
+  components: { Input, PageWrapper },
+  data() {
+    return {
+      myChart : undefined,
+      selected_wav_file: undefined,
+      wav_list_options: []
+    };
+  },
+  mounted() {
+    this.myChart =useECharts().echarts.init(
+      document.getElementById("my_echart")
+    );
+  },
+  methods: {
+    drawMyEchart(data) {
+      let data_length = data.length
+      let x_axis_list = []
+      for(let i=0;i<data_length;i++){
+        x_axis_list.push([i,data[i]])
+      }
+      this.myChart.setOption( {
+        animation: false,
+        grid: {
+          top: 40,
+          left: 50,
+          right: 40,
+          bottom: 50
+        },
+        xAxis: {
+          name: 'x',
+          minorTick: {
+            show: true
           },
-          legend: {
-            data: ['line', 'bar'],
-            textStyle: {
-              color: '#ccc',
-            },
+          minorSplitLine: {
+            show: true
+          }
+        },
+        yAxis: {
+          name: 'y',
+          minorTick: {
+            show: true
           },
-          xAxis: {
-            data: category,
-            axisLine: {
-              lineStyle: {
-                color: '#ccc',
-              },
-            },
+          minorSplitLine: {
+            show: true
+          }
+        },
+        lineStyle: {
+          color: "#1f77b4",
+        },
+        dataZoom: [
+          {
+            show: true,
+            type: 'inside',
+            filterMode: 'none',
+            xAxisIndex: [0],
+            startValue: 0,
+            endValue: data_length
           },
-          yAxis: {
-            splitLine: { show: false },
-            axisLine: {
-              lineStyle: {
-                color: '#ccc',
-              },
-            },
-          },
-          series: [
-            {
-              name: 'line',
-              type: 'line',
-              smooth: true,
-              showAllSymbol: 'auto',
-              symbol: 'emptyCircle',
-              symbolSize: 15,
-              data: lineData,
-            },
-            {
-              name: 'bar',
-              type: 'bar',
-              barWidth: 10,
-              itemStyle: {
-                borderRadius: 5,
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: '#14c8d4' },
-                  { offset: 1, color: '#43eec6' },
-                ]),
-              },
-              data: barData,
-            },
-            {
-              name: 'line',
-              type: 'bar',
-              barGap: '-100%',
-              barWidth: 10,
-              itemStyle: {
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: 'rgba(20,200,212,0.5)' },
-                  { offset: 0.2, color: 'rgba(20,200,212,0.2)' },
-                  { offset: 1, color: 'rgba(20,200,212,0)' },
-                ]),
-              },
-              z: -12,
-              data: lineData,
-            },
-            {
-              name: 'dotted',
-              type: 'pictorialBar',
-              symbol: 'rect',
-              itemStyle: {
-                color: '#0f375f',
-              },
-              symbolRepeat: true,
-              symbolSize: [12, 4],
-              symbolMargin: 1,
-              z: -10,
-              data: lineData,
-            },
-          ],
-        });
+          {
+            show: true,
+            type: 'inside',
+            filterMode: 'none',
+            yAxisIndex: [0],
+            startValue: -0.5,
+            endValue: 0.5
+          }
+        ],
+        series: [
+          {
+            type: 'line',
+            showSymbol: false,
+            clip: true,
+            data: x_axis_list
+          }
+        ]
       });
-      return { chartRef };
     },
-  });
+    generateBtnClick() {
+      let params = { "wavFileName": this.selected_wav_file };
+      getSoundWaveListApi(params).then((res) => {
+        this.drawMyEchart(res)
+      }, error => {
+        console.log(error);
+      });
+    },
+    focus() {
+      this.wav_list_options = [];
+      getWavFileListApi().then((res) => {
+        res.forEach((ele) => {
+          this.wav_list_options.push({ value: ele, label: ele });
+        });
+      }, error => {
+        console.log(error);
+      });
+    },
+    handleChange(value: string) {
+      this.selected_wav_file = value;
+    }
+  }
+
+});
 
 </script>

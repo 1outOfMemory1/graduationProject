@@ -21,7 +21,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
   import { Input } from 'ant-design-vue';
-import { getListWavFileApi } from "/@/api/sys/wav_process";
+import { getWavFileListApi } from "/@/api/sys/wav_process";
 import { PageWrapper } from '/@/components/Page';
   export default defineComponent({
     name: 'Menu4Demo',
@@ -35,7 +35,7 @@ import { PageWrapper } from '/@/components/Page';
     methods: {
       focus() {
         this.wav_list_options = [];
-        getListWavFileApi().then((res) => {
+        getWavFileListApi().then((res) => {
           res.forEach((ele) => {
             this.wav_list_options.push({ value: ele, label: ele });
           });

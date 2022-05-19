@@ -85,7 +85,7 @@ def upload_file():
     return "file uploaded Fail"
 
 
-@app.route("/list_wav_file")
+@app.route("/get_wav_file_list")
 def list_wav_file():
     file = os.listdir(upload_dir)
     file_list = []
@@ -93,7 +93,7 @@ def list_wav_file():
         file_list.append(f)
     return commonSuccessResponse(file_list, "成功获取已上传的wav文件列表")
 
-@app.route("/get_sound_wave_pic_url")
+@app.route("/get_sound_wave_list")
 def get_sound_wave_pic_url():
     file_name =  request.args.get('wavFileName')
     file_path = upload_dir + "/" + file_name
