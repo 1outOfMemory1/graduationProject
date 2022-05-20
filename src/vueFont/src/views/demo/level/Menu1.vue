@@ -73,9 +73,6 @@ export default defineComponent({
       myAudioBlob : null
     }
   },
-  mounted(){
-
-  },
   methods:{
     beginRecordAudio() {
       this.$notification.success({

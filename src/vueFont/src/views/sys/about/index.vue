@@ -1,95 +1,45 @@
 <template>
-  <PageWrapper title="关于">
-    <template #headerContent>
-      <div class="flex justify-between items-center">
-        <span class="flex-1">
-          本项目是前端是基于vue-vben-admin 开源框架搭建，主要用于语音识别的展示
-
+  <div>
+    <PageWrapper title="作者信息">
+      <template #headerContent>
+        <div style="margin-left: 40px" class="flex justify-between items-center">
+        <span style="font-weight: bold;font-size: 20px" class="flex-1">
+          <div style="font-size: 20px;font-weight: bold">开发者：尹浩男</div>
+          <div style="font-size: 20px;font-weight: bold">毕业设计主题：深度学习语音识别</div>
+          <div style="font-size: 20px;font-weight: bold">班级：计算机科学与技术18-5班</div>
         </span>
-      </div>
-    </template>
 
-  </PageWrapper>
+        </div>
+        <div style="font-size: 40px;font-weight: bold"  title="开发信息">
+
+        </div>
+      </template>
+    </PageWrapper>
+    <PageWrapper title="关于">
+      <template #headerContent>
+        <div style="margin-left: 40px" class="flex justify-between items-center">
+        <span style="font-weight: bold;font-size: 20px" class="flex-1">
+          本项目是前端是基于vue-vben-admin 开源框架搭建，主要用于语音识别的相关功能的展示，主要功能有
+          <div style="font-size: 20px;font-weight: bold">1.录制加载音频</div>
+          <div style="font-size: 20px;font-weight: bold">2.绘制声波图和语谱图</div>
+          <div style="font-size: 20px;font-weight: bold">3.语音转拼音，拼音转文字</div>
+        </span>
+
+        </div>
+        <div style="font-size: 40px;font-weight: bold"  title="开发信息">
+
+        </div>
+      </template>
+    </PageWrapper>
+  </div>
 </template>
-<script lang="ts" setup>
-  import { h } from 'vue';
-  import { Tag } from 'ant-design-vue';
+<script lang="ts" >
+
+  import { defineComponent } from "vue";
   import { PageWrapper } from '/@/components/Page';
-  import { Description, DescItem, useDescription } from '/@/components/Description/index';
-  import { GITHUB_URL, SITE_URL, DOC_URL } from '/@/settings/siteSetting';
 
-  const { pkg, lastBuildTime } = __APP_INFO__;
-
-  const { dependencies, devDependencies, name, version } = pkg;
-
-  const schema: DescItem[] = [];
-  const devSchema: DescItem[] = [];
-
-  const commonTagRender = (color: string) => (curVal) => h(Tag, { color }, () => curVal);
-  const commonLinkRender = (text: string) => (href) => h('a', { href, target: '_blank' }, text);
-
-  const infoSchema: DescItem[] = [
-    {
-      label: '版本',
-      field: 'version',
-      render: commonTagRender('blue'),
-    },
-    {
-      label: '最后编译时间',
-      field: 'lastBuildTime',
-      render: commonTagRender('blue'),
-    },
-    {
-      label: '文档地址',
-      field: 'doc',
-      render: commonLinkRender('文档地址'),
-    },
-    {
-      label: '预览地址',
-      field: 'preview',
-      render: commonLinkRender('预览地址'),
-    },
-    {
-      label: 'Github',
-      field: 'github',
-      render: commonLinkRender('Github'),
-    },
-  ];
-
-  const infoData = {
-    version,
-    lastBuildTime,
-    doc: DOC_URL,
-    preview: SITE_URL,
-    github: GITHUB_URL,
-  };
-
-  Object.keys(dependencies).forEach((key) => {
-    schema.push({ field: key, label: key });
+  export default defineComponent({
+    components: { PageWrapper}
   });
 
-  Object.keys(devDependencies).forEach((key) => {
-    devSchema.push({ field: key, label: key });
-  });
-
-  const [register] = useDescription({
-    title: '生产环境依赖',
-    data: dependencies,
-    schema: schema,
-    column: 3,
-  });
-
-  const [registerDev] = useDescription({
-    title: '开发环境依赖',
-    data: devDependencies,
-    schema: devSchema,
-    column: 3,
-  });
-
-  const [infoRegister] = useDescription({
-    title: '项目信息',
-    data: infoData,
-    schema: infoSchema,
-    column: 2,
-  });
 </script>
