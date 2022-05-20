@@ -16,6 +16,7 @@
     </a-select>
     <span style="display: inline-block;width: 10px;height: 10px"> </span>
     <a-button type="primary" @click="generateBtnClick">生成</a-button>
+    <audio style="display: inline-block" :src="audioSrc" controls></audio>
     <img style="width: 100%;height: 800px" :src="imgPath"  >
   </div>
 </template>
@@ -30,6 +31,7 @@ import ImagePreview from "/@/components/Preview/src/Preview.vue";
     components: { ImagePreview, Input,PageWrapper },
     data() {
       return {
+        audioSrc :"",
         imgPath : "public/resource/img/语音识别流程.png",
         selected_wav_file: undefined,
         wav_list_options: []
@@ -53,6 +55,7 @@ import ImagePreview from "/@/components/Preview/src/Preview.vue";
         });
       },
       handleChange(value: string) {
+        this.audioSrc = "http://localhost:5000/static/save_file/" + value
         this.selected_wav_file = value
       },
     }

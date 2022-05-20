@@ -31,7 +31,7 @@ export default defineComponent({
   components: { Input, PageWrapper },
   data() {
     return {
-
+      audioSrc :"",
       myChart : undefined,
       selected_wav_file: undefined,
       wav_list_options: []
@@ -126,7 +126,7 @@ export default defineComponent({
       });
     },
     handleChange(value: string) {
-
+      this.audioSrc = "http://localhost:5000/static/save_file/" + value
       this.selected_wav_file = value;
     }
   }

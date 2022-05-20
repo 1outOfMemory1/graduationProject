@@ -121,8 +121,8 @@ def get_specgram_pic():
 
 
 
-@app.route("/soundToPinyin")
-def soundToPinyin():
+@app.route("/sound_to_pinyin")
+def sound_to_pinyin():
     file_name = request.args.get('wavFileName')
     file_path = upload_dir + "/" + file_name
     if os.path.exists(file_path):
@@ -132,8 +132,8 @@ def soundToPinyin():
     else:
         return commonErrorResponse("文件不存在，请检查文件路径")
 
-@app.route("/pinyinToText")
-def pinyinToText():
+@app.route("/pinyin_to_text")
+def pinyin_to_text():
     str_pinyin = request.args.get('pinyin')
     str_pinyin_list = str_pinyin.split(",")
     res = ml.SpeechToText(str_pinyin_list)
