@@ -17,8 +17,15 @@
       </PageWrapper>
     </div>
     <div style="width: 100%;height: 1000px;display: flex">
-      <div style="flex: 1;width: 50%;height: 100%;background: blue;"></div>
-      <div style="flex: 1; width: 50%;height: 100%;background: yellow;"></div>
+      <div style="margin-left: 40px;flex: 4;width: 50%;height: 100%;">
+        <h1 style="font-size: 30px;font-weight: bold; text-align: center">语音转拼音</h1>
+        <a-textarea   v-model:value="pinyinValue" placeholder="此处是经过DCNN和CTC网络得到的拼音序列" :rows="4" />
+      </div>
+      <div style="flex: 1"></div>
+      <div style="margin-right: 40px;flex: 4; width: 50%;height: 100%;">
+        <h1 style="font-size: 30px;font-weight: bold; text-align: center">拼音转文字</h1>
+        <a-textarea  v-model:value="textValue" placeholder="经过马尔科夫链的拼音推断出文本序列" :rows="4" />
+      </div>
     </div>
 
   </div>
@@ -43,6 +50,8 @@ export default defineComponent({
   },
   data() {
     return {
+      pinyinValue: undefined,
+      textValue : undefined,
       selected_wav_file: undefined,
       wav_list_options: []
     };

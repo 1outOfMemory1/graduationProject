@@ -1,24 +1,46 @@
-import os
-from os import path
-from string import Template
 from flask import Flask, request, send_file
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from scipy.io import wavfile
-app = Flask(__name__,static_folder="./static")
-pwd = os.path.dirname(__file__)
+
 import librosa
 import matplotlib.pyplot as plt
+import os
 
+from model.speech_model import ModelSpeech
+from model.speech_model_zoo import SpeechModel251BN
+from model.speech_features import Spectrogram
+from model.LanguageModel2 import ModelLanguage
+
+
+
+app = Flask(__name__,static_folder="./static")
+pwd = os.path.dirname(__file__)
 # 定义文件的保存路径和文件名尾缀
-upload_dir = "save_file"
-
+upload_dir = "static/save_file"
 UPLOAD_FOLDER = os.path.join(pwd, upload_dir)
 ALLOWED_EXTENSIONS = {'wav'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 HOST = "localhost"
 PORT = 5000
+
+AUDIO_LENGTH = 1600
+AUDIO_FEATURE_LENGTH = 200
+CHANNELS = 1
+# 默认输出的拼音的表示大小是1428，即1427个拼音+1个空白块
+OUTPUT_SIZE = 1428
+sm251bn = SpeechModel251BN(
+    input_shape=(AUDIO_LENGTH, AUDIO_FEATURE_LENGTH, CHANNELS),
+    output_size=OUTPUT_SIZE
+)
+feat = Spectrogram()
+ms = ModelSpeech(sm251bn, feat, max_label_length=64)
+ms.load_model('save_models/' + sm251bn.get_model_name() + '.model.h5')
+ml = ModelLanguage('model_language')
+ml.LoadModel()
+
+
+
 
 
 def commonSuccessResponse(res, message):
@@ -27,30 +49,6 @@ def commonSuccessResponse(res, message):
 def commonErrorResponse(message):
     return {"code": 1, "result": None, "message": message}
 
-
-
-@app.route('/index')
-def index():
-    """
-    返回一个网页端提交的页面
-    :return:
-    """
-    html = Template("""
-    <!DOCTYPE html>
-    <html>
-       <body>
-
-          <form action = "http://$HOST:$PORT/upload" method = "POST"
-             enctype = "multipart/form-data">
-             <input type = "file" name = "file" />
-             <input type = "submit"/>
-          </form>
-
-       </body>
-    </html>
-    """)
-    html = html.substitute({"HOST": HOST, "PORT": PORT})
-    return html
 
 
 def allowed_file(filename):
@@ -114,20 +112,35 @@ def get_specgram_pic():
         plt.specgram(signalData,Fs=samplingFrequency)
         now = datetime.now()
         time_str = now.strftime("%Y-%m-%d,%H-%M-%S")
-        plt.savefig("static/{}.png".format(time_str))
-        return commonSuccessResponse("http://{}:{}/static/{}.png".format(HOST,PORT,time_str), "获取{}录音文件语谱图成功".format(file_name))
+        plt.savefig("static/pic/{}.png".format(time_str))
+        return commonSuccessResponse("http://{}:{}/static/pic/{}.png".format(HOST,PORT,time_str), "获取{}录音文件语谱图成功".format(file_name))
     else:
         return commonErrorResponse("{}文件不存在".format(file_name))
 
 
-@app.route("/download")
-def download_file():
-    file_name = request.args.get('fileId')
-    file_path = os.path.join(pwd, 'src_file', file_name)
-    if os.path.isfile(file_path):
-        return send_file(file_path, as_attachment=True)
+
+
+
+@app.route("/soundToPinyin")
+def soundToPinyin():
+    file_name = request.args.get('wavFileName')
+    file_path = upload_dir + "/" + file_name
+    if os.path.exists(file_path):
+        res = ms.recognize_speech_from_file(file_path)
+    # print('*[提示] 声学模型语音识别结果：\n', res)
+        return commonSuccessResponse(res,"wav文件转为拼音成功")
     else:
-        return "The downloaded file does not exist"
+        return commonErrorResponse("文件不存在，请检查文件路径")
+
+@app.route("/pinyinToText")
+def pinyinToText():
+    str_pinyin = request.args.get('pinyin')
+    str_pinyin_list = str_pinyin.split(",")
+    res = ml.SpeechToText(str_pinyin_list)
+    # print('*[提示] 声学模型语音识别结果：\n', res)
+    return commonSuccessResponse(res,"拼音转换为文本成功")
+
+
 
 if __name__ == '__main__':
     app.run(host=HOST, port=PORT)

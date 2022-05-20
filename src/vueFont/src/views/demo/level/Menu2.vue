@@ -13,17 +13,17 @@
       </a-select>
       <span style="display: inline-block;width: 10px;height: 10px"> </span>
       <a-button type="primary" @click="generateBtnClick">生成</a-button>
+      <audio style="display: inline-block" :src="audioSrc" controls></audio>
     </PageWrapper>
     <div id="my_echart" style="width: 100%;height: 800px"></div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, Ref, ref } from "vue";
+import { defineComponent } from "vue";
 import { Input } from "ant-design-vue";
 import { getSoundWaveListApi, getWavFileListApi } from "/@/api/sys/wav_process";
 import { PageWrapper } from "/@/components/Page";
 import { useECharts } from "/@/hooks/web/useECharts";
-import { getLineData } from "/@/views/demo/charts/data";
 
 export default defineComponent({
 
@@ -31,6 +31,7 @@ export default defineComponent({
   components: { Input, PageWrapper },
   data() {
     return {
+
       myChart : undefined,
       selected_wav_file: undefined,
       wav_list_options: []
@@ -42,6 +43,7 @@ export default defineComponent({
     );
   },
   methods: {
+
     drawMyEchart(data) {
       let data_length = data.length
       let x_axis_list = []
@@ -124,6 +126,7 @@ export default defineComponent({
       });
     },
     handleChange(value: string) {
+
       this.selected_wav_file = value;
     }
   }
