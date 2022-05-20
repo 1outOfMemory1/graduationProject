@@ -1,32 +1,38 @@
 <template>
   <div class="p-5">
-    <PageWrapper  title="语音转文字">
-      <a-select
-        placeholder="选择想要分析的已经保存的录音"
-        ref="select"
-        :value="selected_wav_file"
-        style="width: 250px"
-        :options="wav_list_options"
-        @focus="focus"
-        @change="handleChange"
-      >
-      </a-select>
-      <span style="display: inline-block;width: 10px;height: 10px"> </span>
-      <a-button type="primary">生成</a-button>
-
-    </PageWrapper>
+    <div>
+      <PageWrapper title="语音转文字">
+        <a-select
+          placeholder="选择想要分析的已经保存的录音"
+          ref="select"
+          :value="selected_wav_file"
+          style="width: 250px"
+          :options="wav_list_options"
+          @focus="focus"
+          @change="handleChange"
+        >
+        </a-select>
+        <span style="display: inline-block;width: 10px;height: 10px"> </span>
+        <a-button type="primary">生成</a-button>
+      </PageWrapper>
+    </div>
+    <div style="width: 100%;height: 1000px;display: flex">
+      <div style="flex: 1;width: 50%;height: 100%;background: blue;"></div>
+      <div style="flex: 1; width: 50%;height: 100%;background: yellow;"></div>
+    </div>
 
   </div>
 </template>
 <script lang="ts">
 
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import { Input } from "ant-design-vue";
 import { getWavFileListApi } from "/@/api/sys/wav_process";
-import { PageWrapper } from '/@/components/Page';
+import { PageWrapper } from "/@/components/Page";
+
 export default defineComponent({
   name: "Menu3Demo",
-  components: { Input ,PageWrapper},
+  components: { Input, PageWrapper },
   mounted() {
 
 
@@ -53,8 +59,8 @@ export default defineComponent({
       });
     },
     handleChange(value: string) {
-      this.selected_wav_file = value
-    },
+      this.selected_wav_file = value;
+    }
   }
 
 });

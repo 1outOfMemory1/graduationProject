@@ -3,6 +3,8 @@ import { defHttp } from '/@/utils/http/axios';
 import { UploadFileParams } from '/#/axios';
 import { useGlobSetting } from '/@/hooks/setting';
 
+
+
 const { uploadUrl = '' } = useGlobSetting();
 
 /**
@@ -19,4 +21,8 @@ export function uploadApi(
     },
     params,
   );
+}
+
+export function uploadSimpleApi(params){
+  return defHttp.post({ url: uploadUrl ,params: params,headers : {'Content-Type': 'multipart/form-data'}}, { errorMessageMode: 'none' });
 }

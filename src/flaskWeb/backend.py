@@ -7,6 +7,8 @@ from datetime import datetime
 from scipy.io import wavfile
 app = Flask(__name__,static_folder="./static")
 pwd = os.path.dirname(__file__)
+import librosa
+import matplotlib.pyplot as plt
 
 # 定义文件的保存路径和文件名尾缀
 upload_dir = "save_file"
@@ -103,6 +105,20 @@ def get_sound_wave_pic_url():
     else:
         return commonErrorResponse("{}文件不存在".format(file_name))
 
+@app.route("/get_specgram_pic_url")
+def get_specgram_pic():
+    file_name = request.args.get('wavFileName')
+    file_path = upload_dir + "/" + file_name
+    if os.path.exists(file_path):
+        signalData, samplingFrequency = librosa.load(file_path, sr=None, mono=False)
+        plt.specgram(signalData,Fs=samplingFrequency)
+        now = datetime.now()
+        time_str = now.strftime("%Y-%m-%d,%H-%M-%S")
+        plt.savefig("static/{}.png".format(time_str))
+        return commonSuccessResponse("http://{}:{}/static/{}.png".format(HOST,PORT,time_str), "获取{}录音文件语谱图成功".format(file_name))
+    else:
+        return commonErrorResponse("{}文件不存在".format(file_name))
+
 
 @app.route("/download")
 def download_file():
@@ -112,7 +128,6 @@ def download_file():
         return send_file(file_path, as_attachment=True)
     else:
         return "The downloaded file does not exist"
-
 
 if __name__ == '__main__':
     app.run(host=HOST, port=PORT)

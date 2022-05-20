@@ -91,8 +91,8 @@ export default defineComponent({
             type: 'inside',
             filterMode: 'none',
             yAxisIndex: [0],
-            startValue: -0.5,
-            endValue: 0.5
+            startValue: -30000,
+            endValue: 30000
           }
         ],
         series: [

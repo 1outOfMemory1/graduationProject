@@ -23,7 +23,8 @@ framesize = int(framelength * fs)
 print("NFFT:", framesize)
 
 # 画语谱图
-plt.specgram(data, NFFT=framesize, Fs=fs, window=np.hanning(M=framesize), scale_by_freq=True, sides='default')
+# plt.specgram(data, NFFT=framesize, Fs=fs, window=np.hanning(M=framesize), scale_by_freq=True, sides='default')
+plt.specgram(data,Fs=fs)
 plt.colorbar(format='%+2.0f ')
 plt.ylabel('频率(Hz)')
 plt.xlabel('时间(s)')
